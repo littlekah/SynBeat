@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🥭 SynBeats - FL Studio Style</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1E1E1E;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* Container Principal - igual FL Studio */
+        .fl-studio {
+            width: 1400px;
+            max-width: 100%;
+            background: #2C2C2C;
+            border-radius: 10px 10px 20px 20px;
+            border: 2px solid #4A4A4A;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        /* Top Bar - igual FL Studio */
+        .top-bar {
+            background: #3A3A3A;
+            padding: 8px 15px;
+            border-bottom: 2px solid #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .manga-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 0 #FFD700);
+        }
+
+        .synbeats-text {
+            color: #FFD700;
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+
+        /* Menu igual FL Studio */
+        .menu-bar {
+            display: flex;
+            gap: 15px;
+            background: #2A2A2A;
+            padding: 5px 15px;
+            border-bottom: 1px solid #FFD700;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            color: #FFD700;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .menu-item:hover {
+            background: #FFD700;
+            color: black;
+        }
+
+        .menu-item.active {
+            background: #FFD700;
+            color: black;
+        }
+
+        /* Time Bar (igual FL Studio) */
+        .time-bar {
+            background: #1E1E1E;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #FFD700;
+            border-bottom: 2px solid #4A4A4A;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .time-display {
+            background: #0A0A0A;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #FFD700;
+        }
+
+        .transport {
+            display: flex;
+            gap: 15px;
+        }
+
+        .transport-btn {
+            background: #3A3A3A;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            padding: 5px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .transport-btn:hover {
+            background: #FFD700;
+            color: black;
+        }
+
+        /* Main Layout - 2 colunas igual FL Studio */
+        .main-workspace {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2px;
+            background: #1E1E1E;
+            padding: 2px;
+        }
+
+        /* Channel Rack (esquerda) */
+        .channel-rack {
+            background: #2A2A2A;
+            border-right: 2px solid #FFD700;
+            padding: 10px;
+        }
+
+        .rack-header {
+            color: #FFD700;
+            font-weight: bold;
+            padding: 10px;
+            border-bottom: 2px solid #FFD700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .channel-item {
+            background: #3A3A3A;
+            border: 1px solid #5A5A5A;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .channel-item.active {
+            border: 2px solid #FFD700;
+            background: #4A4A4A;
+        }
+
+        .channel-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .channel-name {
+            color: white;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .channel-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .channel-btn {
+            background: #1E1E1E;
+            color: #FFD700;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Piano Roll (direita) */
+        .piano-roll {
+            background: #1E1E1E;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        .piano-roll-header {
+            display: flex;
+            gap: 20px;
+            color: #FFD700;
+            padding: 10px;
+            border-bottom: 2px solid #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tool-btn {
+            background: #3A3A3A;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            padding: 5px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tool-btn.active {
+            background: #FFD700;
+            color: black;
+        }
+
+        /* Grid do Piano Roll */
+        .piano-grid-container {
+            display: flex;
+            height: 600px;
+            overflow-y: auto;
+            overflow-x: auto;
+            background: #0A0A0A;
+            border: 2px solid #4A4A4A;
+        }
+
+        .piano-keys {
+            width: 100px;
+            background: #2A2A2A;
+            border-right: 2px solid #FFD700;
+            flex-shrink: 0;
+        }
+
+        .piano-key {
+            height: 40px;
+            border-bottom: 1px solid #4A4A4A;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .piano-key.black {
+            background: #1A1A1A;
+            color: #FFA500;
+        }
+
+        .piano-key.white {
+            background: #3A3A3A;
+        }
+
+        .piano-key span {
+            position: absolute;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .notes-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(64, 40px);
+            grid-template-rows: repeat(48, 40px);
+            gap: 1px;
+            background: #1E1E1E;
+            position: relative;
+        }
+
+        .grid-cell {
+            background: #2A2A2A;
+            border: 1px solid #3A3A3A;
+            cursor: pointer;
+            transition: 0.05s;
+        }
+
+        .grid-cell.note {
+            background: #FFD700;
+            border: 2px solid white;
+            box-shadow: 0 0 10px #FFD700;
+        }
+
+        .grid-cell.note.kick { background: #FF6B6B; }
+        .grid-cell.note.snare { background: #4CAF50; }
+        .grid-cell.note.hat { background: #45B7D1; }
+        .grid-cell.note.clap { background: #9C27B0; }
+
+        .grid-cell.playing {
+            background: #00FF00 !important;
+            border: 2px solid white;
+        }
+
+        .grid-cell.drag {
+            opacity: 0.7;
+            transform: scale(1.1);
+        }
+
+        .time-marker {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #FFD700;
+            pointer-events: none;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            background: #3A3A3A;
+            padding: 10px 20px;
+            border-top: 2px solid #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .bpm-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .bpm-control input {
+            width: 150px;
+            background: #1E1E1E;
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            height: 8px;
+        }
+
+        .status {
+            color: #FFD700;
+            font-size: 0.9rem;
+        }
+
+        .json-controls {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .json-btn {
+            background: #7B1FA2;
+            border: 2px solid #FFD700;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .json-btn.export {
+            background: #1565C0;
+        }
+
+        /* Scrollbars customizadas */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1E1E1E;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="fl-studio">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo-area">
+                <span class="manga-icon">🥭</span>
+                <span class="synbeats-text">SynBeats</span>
+            </div>
+            <div class="time-display" id="timeDisplay">
+                0:03.25
+            </div>
+            <div class="transport">
+                <div class="transport-btn" id="playBtn">▶ PLAY</div>
+                <div class="transport-btn" id="stopBtn">⏹ STOP</div>
+                <div class="transport-btn" id="recordBtn">⚫ REC</div>
+            </div>
+        </div>
+
+        <!-- Menu Bar - igual FL Studio -->
+        <div class="menu-bar">
+            <div class="menu-item active">FILE</div>
+            <div class="menu-item">EDIT</div>
+            <div class="menu-item">AUDIO</div>
+            <div class="menu-item">PATTERNS</div>
+            <div class="menu-item">VIEW</div>
+            <div class="menu-item">OPTIONS</div>
+            <div class="menu-item">TOOLS</div>
+            <div class="menu-item">FOCUS</div>
+            <div class="menu-item">HELP</div>
+        </div>
+
+        <!-- Time Bar -->
+        <div class="time-bar">
+            <span>PATTERN 1</span>
+            <span>BAR: 1</span>
+            <span>BEAT: 1</span>
+            <span>STEP: 1/16</span>
+            <span id="currentStep">0:00.00</span>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="main-workspace">
+            <!-- Channel Rack (esquerda) -->
+            <div class="channel-rack">
+                <div class="rack-header">
+                    <span>CHANNEL RACK</span>
+                    <span>▼</span>
+                </div>
+                
+                <div class="channel-item active" data-instrument="0">
+                    <div class="channel-color" style="background: #FF6B6B;"></div>
+                    <span class="channel-name">KICK</span>
+                    <div class="channel-controls">
+                        <button class="channel-btn">S</button>
+                        <button class="channel-btn">M</button>
+                    </div>
+                </div>
+                
+                <div class="channel-item" data-instrument="1">
+                    <div class="channel-color" style="background: #4CAF50;"></div>
+                    <span class="channel-name">SNARE</span>
+                    <div class="channel-controls">
+                        <button class="channel-btn">S</button>
+                        <button class="channel-btn">M</button>
+                    </div>
+                </div>
+                
+                <div class="channel-item" data-instrument="2">
+                    <div class="channel-color" style="background: #45B7D1;"></div>
+                    <span class="channel-name">HAT</span>
+                    <div class="channel-controls">
+                        <button class="channel-btn">S</button>
+                        <button class="channel-btn">M</button>
+                    </div>
+                </div>
+                
+                <div class="channel-item" data-instrument="3">
+                    <div class="channel-color" style="background: #9C27B0;"></div>
+                    <span class="channel-name">CLAP</span>
+                    <div class="channel-controls">
+                        <button class="channel-btn">S</button>
+                        <button class="channel-btn">M</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Piano Roll -->
+            <div class="piano-roll">
+                <div class="piano-roll-header">
+                    <div class="tool-group">
+                        <div class="tool-btn active" id="pencilTool">✏️ PENCIL</div>
+                        <div class="tool-btn" id="selectTool">🔲 SELECT</div>
+                        <div class="tool-btn" id="eraserTool">🗑 ERASER</div>
+                    </div>
+                    <div class="tool-group">
+                        <div class="tool-btn" id="copyBtn">📋 COPY</div>
+                        <div class="tool-btn" id="pasteBtn">📌 PASTE</div>
+                        <div class="tool-btn" id="clearBtn">🗑 CLEAR</div>
+                    </div>
+                </div>
+
+                <div class="piano-grid-container" id="pianoGridContainer">
+                    <!-- Piano Keys (esquerda) -->
+                    <div class="piano-keys" id="pianoKeys"></div>
+                    
+                    <!-- Grid de Notas -->
+                    <div class="notes-grid" id="notesGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="bpm-control">
+                <span>⚡ BPM:</span>
+                <input type="range" id="bpmSlider" min="60" max="200" value="120">
+                <span id="bpmValue">120</span>
+            </div>
+            
+            <div class="status" id="status">
+                🥭 Ready | Pattern 1 | 0 notes
+            </div>
+            
+            <div class="json-controls">
+                <button class="json-btn export" id="exportBtn">📥 EXPORT JSON</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+                <button class="json-btn" id="importBtn">📤 IMPORT JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Audio Setup
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const audioCtx = new AudioContext();
+            
+            // Config
+            let currentInstrument = 0;
+            let currentTool = 'pencil'; // pencil, select, eraser
+            let isPlaying = false;
+            let currentStep = 0;
+            let intervalId = null;
+            let bpm = 120;
+            let volume = 0.7;
+            
+            // Notas (48 notas = 4 oitavas)
+            const notes = [];
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            
+            for (let octave = 2; octave <= 6; octave++) {
+                for (let i = 0; i < noteNames.length; i++) {
+                    notes.push({
+                        name: noteNames[i] + octave,
+                        octave: octave,
+                        isBlack: noteNames[i].includes('#'),
+                        freq: 440 * Math.pow(2, (octave - 4) + (i / 12))
+                    });
+                }
+            }
+            
+            // Sequência: 4 instrumentos x 48 notas x 64 steps
+            let sequence = [];
+            for (let inst = 0; inst < 4; inst++) {
+                sequence[inst] = [];
+                for (let n = 0; n < notes.length; n++) {
+                    sequence[inst][n] = Array(64).fill(false);
+                }
+            }
+            
+            // Clipboard
+            let clipboard = [];
+            
+            // DOM
+            const pianoKeys = document.getElementById('pianoKeys');
+            const notesGrid = document.getElementById('notesGrid');
+            const playBtn = document.getElementById('playBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const recordBtn = document.getElementById('recordBtn');
+            const pencilTool = document.getElementById('pencilTool');
+            const selectTool = document.getElementById('selectTool');
+            const eraserTool = document.getElementById('eraserTool');
+            const copyBtn = document.getElementById('copyBtn');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFile = document.getElementById('importFile');
+            const bpmSlider = document.getElementById('bpmSlider');
+            const bpmValue = document.getElementById('bpmValue');
+            const status = document.getElementById('status');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const currentStepSpan = document.getElementById('currentStep');
+            
+            // Renderizar piano keys
+            function renderPianoKeys() {
+                pianoKeys.innerHTML = '';
+                
+                notes.slice().reverse().forEach((note, index) => {
+                    const key = document.createElement('div');
+                    key.className = `piano-key ${note.isBlack ? 'black' : 'white'}`;
+                    key.innerHTML = `${note.name} <span>${note.isBlack ? '♯' : ''}</span>`;
+                    key.dataset.noteIndex = notes.length - 1 - index;
+                    
+                    // Preview ao clicar
+                    key.addEventListener('mousedown', () => {
+                        playNote(notes.length - 1 - index, currentInstrument);
+                    });
+                    
+                    key.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        playNote(notes.length - 1 - index, currentInstrument);
+                    });
+                    
+                    pianoKeys.appendChild(key);
+                });
+            }
+            
+            // Renderizar grid de notas
+            function renderNotesGrid() {
+                notesGrid.innerHTML = '';
+                
+                // Criar células
+                for (let n = notes.length - 1; n >= 0; n--) {
+                    for (let s = 0; s < 64; s++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'grid-cell';
+                        cell.dataset.noteIndex = n;
+                        cell.dataset.step = s;
+                        
+                        // Verificar se tem nota
+                        for (let inst = 0; inst < 4; inst++) {
+                            if (sequence[inst][n][s]) {
+                                cell.classList.add('note');
+                                switch(inst) {
+                                    case 0: cell.classList.add('kick'); break;
+                                    case 1: cell.classList.add('snare'); break;
+                                    case 2: cell.classList.add('hat'); break;
+                                    case 3: cell.classList.add('clap'); break;
+                                }
+                            }
+                        }
+                        
+                        // Eventos
+                        cell.addEventListener('mousedown', (e) => {
+                            e.preventDefault();
+                            handleCellClick(e.target);
+                        });
+                        
+                        cell.addEventListener('mouseenter', (e) => {
+                            if (e.buttons === 1) {
+                                handleCellClick(e.target);
+                            }
+                        });
+                        
+                        cell.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            handleCellClick(e.target);
+                        });
+                        
+                        cell.addEventListener('touchmove', (e) => {
+                            e.preventDefault();
+                            const touch = e.touches[0];
+                            const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+                            if (elem && elem.classList.contains('grid-cell')) {
+                                handleCellClick(elem);
+                            }
+                        });
+                        
+                        notesGrid.appendChild(cell);
+                    }
+                }
+            }
+            
+            // Handle cell click based on tool
+            function handleCellClick(cell) {
+                const noteIndex = parseInt(cell.dataset.noteIndex);
+                const step = parseInt(cell.dataset.step);
+                
+                switch(currentTool) {
+                    case 'pencil':
+                        // Toggle nota no instrumento atual
+                        sequence[currentInstrument][noteIndex][step] = !sequence[currentInstrument][noteIndex][step];
+                        if (sequence[currentInstrument][noteIndex][step]) {
+                            playNote(noteIndex, currentInstrument);
+                        }
+                        break;
+                        
+                    case 'eraser':
+                        // Remove nota de todos os instrumentos
+                        for (let inst = 0; inst < 4; inst++) {
+                            sequence[inst][noteIndex][step] = false;
+                        }
+                        break;
+                        
+                    case 'select':
+                        // Inicia seleção (implementar depois)
+                        break;
+                }
+                
+                updateGridColors();
+                updateStatus();
+            }
+            
+            // Atualizar cores do grid
+            function updateGridColors() {
+                const cells = document.querySelectorAll('.grid-cell');
+                cells.forEach(cell => {
+                    cell.classList.remove('note', 'kick', 'snare', 'hat', 'clap');
+                    
+                    const noteIndex = parseInt(cell.dataset.noteIndex);
+                    const step = parseInt(cell.dataset.step);
+                    
+                    for (let inst = 0; inst < 4; inst++) {
+                        if (sequence[inst][noteIndex][step]) {
+                            cell.classList.add('note');
+                            switch(inst) {
+                                case 0: cell.classList.add('kick'); break;
+                                case 1: cell.classList.add('snare'); break;
+                                case 2: cell.classList.add('hat'); break;
+                                case 3: cell.classList.add('clap'); break;
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Tocar nota
+            function playNote(noteIndex, instrument) {
+                if (audioCtx.state !== 'running') return;
+                
+                const freq = notes[noteIndex].freq;
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                let type = 'sine';
+                switch(instrument) {
+                    case 0: type = 'triangle'; break; // KICK
+                    case 1: type = 'sawtooth'; break; // SNARE
+                    case 2: type = 'square'; break;   // HAT
+                    case 3: type = 'sine'; break;     // CLAP
+                }
+                
+                osc.type = type;
+                osc.frequency.value = freq;
+                
+                gain.gain.setValueAtTime(volume, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+            
+            // Sequenciador
+            function startSequencer() {
+                if (intervalId) clearInterval(intervalId);
+                
+                const stepTime = (60 / bpm) * 1000 / 4;
+                let step = 0;
+                
+                function playStep() {
+                    // Tocar notas
+                    for (let inst = 0; inst < 4; inst++) {
+                        for (let n = 0; n < notes.length; n++) {
+                            if (sequence[inst][n][step]) {
+                                playNote(n, inst);
+                            }
+                        }
+                    }
+                    
+                    // Highlight
+                    document.querySelectorAll('.grid-cell').forEach(cell => {
+                        cell.classList.remove('playing');
+                    });
+                    
+                    document.querySelectorAll(`[data-step="${step}"]`).forEach(cell => {
+                        cell.classList.add('playing');
+                    });
+                    
+                    // Update time display
+                    const minutes = Math.floor(step / 16);
+                    const seconds = ((step % 16) * 0.25).toFixed(2);
+                    timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(5, '0')}`;
+                    currentStepSpan.textContent = `${minutes}:${seconds}`;
+                    
+                    step = (step + 1) % 64;
+                }
+                
+                playStep();
+                intervalId = setInterval(playStep, stepTime);
+            }
+            
+            // Update status
+            function updateStatus() {
+                let totalNotes = 0;
+                for (let inst = 0; inst < 4; inst++) {
+                    for (let n = 0; n < notes.length; n++) {
+                        totalNotes += sequence[inst][n].filter(v => v).length;
+                    }
+                }
+                status.textContent = `🥭 Ready | Pattern 1 | ${totalNotes} notes`;
+            }
+            
+            // Channel selection
+            document.querySelectorAll('.channel-item').forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    currentInstrument = index;
+                });
+            });
+            
+            // Tools
+            pencilTool.addEventListener('click', () => {
+                currentTool = 'pencil';
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                pencilTool.classList.add('active');
+            });
+            
+            selectTool.addEventListener('click', () => {
+                currentTool = 'select';
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                selectTool.classList.add('active');
+            });
+            
+            eraserTool.addEventListener('click', () => {
+                currentTool = 'eraser';
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                eraserTool.classList.add('active');
+            });
+            
+            // Audio activation
+            document.body.addEventListener('click', () => {
+                audioCtx.resume();
+            }, { once: true });
+            
+            // Play/Stop
+            playBtn.addEventListener('click', () => {
+                if (!isPlaying) {
+                    isPlaying = true;
+                    startSequencer();
+                }
+            });
+            
+            stopBtn.addEventListener('click', () => {
+                isPlaying = false;
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+                document.querySelectorAll('.grid-cell').forEach(cell => {
+                    cell.classList.remove('playing');
+                });
+                timeDisplay.textContent = '0:00.00';
+                currentStepSpan.textContent = '0:00.00';
+            });
+            
+            // Copy/Paste
+            copyBtn.addEventListener('click', () => {
+                clipboard = [];
+                for (let n = 0; n < notes.length; n++) {
+                    clipboard[n] = [...sequence[currentInstrument][n]];
+                }
+                status.textContent = '🥭 Copied!';
+            });
+            
+            pasteBtn.addEventListener('click', () => {
+                if (clipboard.length > 0) {
+                    for (let n = 0; n < notes.length; n++) {
+                        if (clipboard[n]) {
+                            sequence[currentInstrument][n] = [...clipboard[n]];
+                        }
+                    }
+                    updateGridColors();
+                    updateStatus();
+                }
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                for (let n = 0; n < notes.length; n++) {
+                    sequence[currentInstrument][n] = Array(64).fill(false);
+                }
+                updateGridColors();
+                updateStatus();
+            });
+            
+            // BPM
+            bpmSlider.addEventListener('input', (e) => {
+                bpm = e.target.value;
+                bpmValue.textContent = bpm;
+                if (isPlaying) {
+                    stopBtn.click();
+                    playBtn.click();
+                }
+            });
+            
+            // Export JSON
+            exportBtn.addEventListener('click', () => {
+                const data = {
+                    bpm: bpm,
+                    sequence: sequence,
+                    version: '1.0'
+                };
+                
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `synbeats-${Date.now()}.json`;
+                a.click();
+                
+                status.textContent = '🥭 Exported!';
+            });
+            
+            // Import JSON
+            importBtn.addEventListener('click', () => {
+                importFile.click();
+            });
+            
+            importFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.sequence) {
+                                sequence = data.sequence;
+                                updateGridColors();
+                                updateStatus();
+                                status.textContent = '🥭 Imported!';
+                            }
+                            if (data.bpm) {
+                                bpm = data.bpm;
+                                bpmSlider.value = bpm;
+                                bpmValue.textContent = bpm;
+                            }
+                        } catch (err) {
+                            status.textContent = '🥭 Error importing!';
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+            
+            // Initialize
+            renderPianoKeys();
+            renderNotesGrid();
+            updateStatus();
+        })();
+    </script>
+</body>
+</html>
